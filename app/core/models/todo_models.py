@@ -11,6 +11,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
+    relationship,
 )
 
 from .base import Base
@@ -23,6 +24,7 @@ class ToDoList(IntIDPkMixin, Base):
         server_default=func.now(),
         default=datetime.now(),
     )
+    todo_item = relationship("ToDoItem", back_populates="todo_list")
 
 
 class ToDoItem(IntIDPkMixin, Base):
@@ -33,3 +35,4 @@ class ToDoItem(IntIDPkMixin, Base):
         server_default=func.now(),
         default=datetime.now(),
     )
+    todo_list = relationship("ToDoList", back_populates="todo_item")
