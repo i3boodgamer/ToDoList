@@ -7,16 +7,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from crud.todo_list import (
     get_all_todo_list,
     create_todo_list,
+    full_todo,
+)
+from crud.todo_item import (
     get_all_todo_item,
     create_todo_item,
-    full_todo,
-
 )
 from core.models.db_helper import db_helper
 from core.schemas.todo import (
     ToDoListCreate,
     ToDoItemCreate,
-    TodoResponse
+    ToDoListResponse,
 )
 
 
@@ -47,6 +48,6 @@ async def create_item_todo(
     return await create_todo_item(todo_item=todo_item, session=session)
 
 
-@router.get("/todo/")
+@router.get("/todo/", response_model=list[ToDoListResponse])
 async def get_todo(session: AsyncSession = Depends(db_helper.session_getter)):
     return await full_todo(session=session)
