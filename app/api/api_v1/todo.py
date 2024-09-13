@@ -1,9 +1,11 @@
 from fastapi import (
     APIRouter,
     Depends,
+    status
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.dependencies.todo_item import get_id_item
 from crud.todo_list import (
     get_all_todo_list,
     create_todo_list,
@@ -12,8 +14,10 @@ from crud.todo_list import (
 from crud.todo_item import (
     get_all_todo_item,
     create_todo_item,
+    del_todo_item
 )
 from core.models.db_helper import db_helper
+from core.models import ToDoItem
 from core.schemas.todo import (
     ToDoListCreate,
     ToDoItemCreate,
@@ -43,11 +47,19 @@ async def get_todo_item(session: AsyncSession = Depends(db_helper.session_getter
 
 @router.post("/item", response_model=ToDoItemCreate)
 async def create_item_todo(
-    todo_item: ToDoItemCreate, session: AsyncSession = Depends(db_helper.session_getter)
+    item: ToDoItemCreate, session: AsyncSession = Depends(db_helper.session_getter)
 ):
-    return await create_todo_item(todo_item=todo_item, session=session)
+    return await create_todo_item(todo_item=item, session=session)
 
 
 @router.get("/todo/", response_model=list[ToDoListResponse])
 async def get_todo(session: AsyncSession = Depends(db_helper.session_getter)):
     return await full_todo(session=session)
+
+
+@router.delete("/{item_id}/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_item_todo(
+    item: ToDoItem = Depends(get_id_item),
+    session: AsyncSession = Depends(db_helper.session_getter),
+):
+    return await del_todo_item(todo_item=item, session=session)
