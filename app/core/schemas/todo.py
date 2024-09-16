@@ -14,6 +14,15 @@ class ToDoItemCreate(BaseModel):
     completed: bool = False
 
 
+class ToDoItemUpdate(BaseModel):
+    completed: bool
+
+
+class TodoItemUpdate(ToDoItemCreate):
+    title: str | None = None
+    completed: bool | None = None
+
+
 class TodoItemResponse(BaseModel):
     create_at: datetime
     title: str
