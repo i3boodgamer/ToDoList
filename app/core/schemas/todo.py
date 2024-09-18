@@ -15,10 +15,6 @@ class ToDoItemCreate(BaseModel):
 
 
 class ToDoItemUpdate(BaseModel):
-    completed: bool
-
-
-class TodoItemUpdate(ToDoItemCreate):
     title: str | None = None
     completed: bool | None = None
 
@@ -33,4 +29,8 @@ class ToDoListResponse(BaseModel):
     title: str
     create_at: datetime
     todo_item: List[TodoItemResponse]
+
+
+class ToDoListUpdate(BaseModel):
+    title: str
 

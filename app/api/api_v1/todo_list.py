@@ -11,13 +11,15 @@ from crud.todo_list import (
     get_all_todo_list,
     create_todo_list,
     full_todo,
-    del_todo_list
+    del_todo_list,
+    update_title_list,
 )
 from core.models.db_helper import db_helper
 from core.models.todo_models import ToDoList
 from core.schemas.todo import (
     ToDoListCreate,
     ToDoListResponse,
+    ToDoListUpdate
 )
 
 
@@ -29,6 +31,11 @@ async def get_todo_list(session: AsyncSession = Depends(db_helper.session_getter
     return await get_all_todo_list(session=session)
 
 
+@router.get("/todo/", response_model=list[ToDoListResponse])
+async def get_todo(session: AsyncSession = Depends(db_helper.session_getter)):
+    return await full_todo(session=session)
+
+
 @router.post("/list", response_model=ToDoListCreate)
 async def create_list_todo(
     todo_list: ToDoListCreate, session: AsyncSession = Depends(db_helper.session_getter)
@@ -36,9 +43,13 @@ async def create_list_todo(
     return await create_todo_list(todo_item=todo_list, session=session)
 
 
-@router.get("/todo/", response_model=list[ToDoListResponse])
-async def get_todo(session: AsyncSession = Depends(db_helper.session_getter)):
-    return await full_todo(session=session)
+@router.patch("/{list_id}/", response_model=ToDoListUpdate)
+async def update_list(
+        list_update: ToDoListUpdate,
+        list_at: ToDoList = Depends(get_id_list),
+        session: AsyncSession = Depends(db_helper.session_getter)
+):
+    return await update_title_list(list_at=list_at,list_update=list_update, session=session)
 
 
 @router.delete("/{list_id}/", status_code=status.HTTP_204_NO_CONTENT)
