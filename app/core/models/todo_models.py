@@ -24,7 +24,9 @@ class ToDoList(IntIDPkMixin, Base):
         server_default=func.now(),
         default=datetime.now(),
     )
+    user: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
     todo_item = relationship("ToDoItem", back_populates="todo_list")
+    users = relationship("User", back_populates="todo_list")
 
 
 class ToDoItem(IntIDPkMixin, Base):
