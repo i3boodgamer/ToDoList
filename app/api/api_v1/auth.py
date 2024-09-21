@@ -8,7 +8,7 @@ from core.schemas.user import UserRead, UserCreate
 router = APIRouter(tags=['Auth'], prefix="/auth")
 
 router.include_router(
-    fastapi_users.get_auth_router(auth_backend, requires_verification=False),
+    fastapi_users.get_auth_router(auth_backend, requires_verification=True),
 )
 
 router.include_router(
