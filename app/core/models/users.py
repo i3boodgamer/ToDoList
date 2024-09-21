@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class User(Base, IntIDPkMixin, SQLAlchemyBaseUserTable[int]):
 
-    # todo_list = relationship("ToDoList", back_populates="users")
+    todo_list = relationship("ToDoList", back_populates="users")
 
     @classmethod
     def get_db(cls, session: "AsyncSession"):
