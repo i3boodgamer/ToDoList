@@ -1,17 +1,14 @@
 import uuid
 from typing import Optional
 
-from fastapi import Depends, Request
-from fastapi_users import BaseUserManager
+from fastapi import Request
+from fastapi_users import BaseUserManager, IntegerIDMixin
 
 from core.models import User
 from core.config import settings
-from core.models.mixins.int_id_pk import IntIDPkMixin
-
-SECRET = "SECRET"
 
 
-class UserManager(IntIDPkMixin, BaseUserManager[User, int]):
+class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     reset_password_token_secret = settings.access_token.reset_password_token_secret
     verification_token_secret = settings.access_token.verification_token_secret
 

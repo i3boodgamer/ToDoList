@@ -1,6 +1,4 @@
 from fastapi_users.authentication import BearerTransport
 
-from core.config import settings
+bearer_transport = BearerTransport(tokenUrl="api_v1/auth/login")
 
-
-bearer_transport = BearerTransport(tokenUrl=settings.access_token.path)
