@@ -4,7 +4,7 @@ from sqlalchemy import Select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import ToDoList
+from core.models import ToDoList, User
 from core.schemas.todo import (
     ToDoListCreate,
     ToDoListUpdate,
@@ -15,8 +15,9 @@ from .todo_item import get_all_item_list, del_todo_item
 
 async def get_all_todo_list(
     session: AsyncSession,
+    user: User,
 ) -> Sequence[ToDoList]:
-    stmt = Select(ToDoList).order_by(ToDoList.id)
+    stmt = Select(ToDoList).where(ToDoList.user == user.id).order_by(ToDoList.id)
     result = await session.scalars(stmt)
     return result.all()
 
@@ -31,8 +32,9 @@ async def get_todo_list(
 async def create_todo_list(
     session: AsyncSession,
     todo_item: ToDoListCreate,
+    user: User,
 ) -> ToDoList:
-    todo_list = ToDoList(**todo_item.model_dump())
+    todo_list = ToDoList(**todo_item.model_dump(), user=user.id)
     session.add(todo_list)
     await session.commit()
     return todo_list
