@@ -1,7 +1,7 @@
 from fastapi import (
     APIRouter,
     Depends,
-    status
+    status,
 
 )
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -66,7 +66,8 @@ async def update_list(
 async def delete_list(
         todo_list: ToDoList = Depends(get_id_list),
         session: AsyncSession = Depends(db_helper.session_getter),
+        user: User = Depends(current_user)
 ):
-    return await del_todo_list(todo_list=todo_list, session=session)
+    return await del_todo_list(todo_list=todo_list, session=session, user=user)
 
 
