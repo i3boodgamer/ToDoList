@@ -23,16 +23,19 @@ from core.schemas.todo import (
 )
 
 
-router = APIRouter(tags=["Todo Item"])
+router = APIRouter(tags=["Todo Item"], dependencies=[Depends(current_user)])
 
 
 @router.get("/item", response_model=list[ToDoItemCreate])
-async def get_todo_item(session: AsyncSession = Depends(db_helper.session_getter)):
+async def get_todo_item(
+        session: AsyncSession = Depends(db_helper.session_getter),
+):
     return await get_all_todo_item(session=session)
 
 
 @router.get("/{list_id}/", response_model=list[ToDoItemUpdate])
-async def get_all_list_item(list_at: ToDoList = Depends(get_id_list), session: AsyncSession = Depends(db_helper.session_getter)):
+async def get_all_list_item(
+        list_at: ToDoList = Depends(get_id_list), session: AsyncSession = Depends(db_helper.session_getter)):
     return await get_all_item_list(list_id=list_at, session=session)
 
 
