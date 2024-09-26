@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 
 
 class User(Base, IntIDPkMixin, SQLAlchemyBaseUserTable[int]):
-
     todo_list = relationship("ToDoList", back_populates="users")
 
     @classmethod

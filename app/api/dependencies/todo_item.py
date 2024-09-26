@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import Depends, Path, HTTPException, status
-from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import ToDoItem
@@ -20,5 +19,5 @@ async def get_id_item(
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Product {item_id} is not found",
+        detail=f"Item {item_id} is not found",
     )
