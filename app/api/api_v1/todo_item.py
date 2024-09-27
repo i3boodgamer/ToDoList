@@ -10,12 +10,14 @@ from crud.todo_item import (
     del_todo_item,
     update_todo_item,
     get_all_item_list,
+    completed_todo_item,
 )
 from core.models.db_helper import db_helper
 from core.models import ToDoItem, ToDoList, User
-from core.schemas.todo import (
+from core.schemas.todo_item import (
     ToDoItemCreate,
     ToDoItemUpdate,
+    ToDoItemСompleted
 )
 
 
@@ -67,6 +69,21 @@ async def update_item(
     )
 
 
+@router.patch("/item/update/{item_id}", response_model=ToDoItemСompleted)
+async def completed_item(
+        todo_item_completed: ToDoItemСompleted,
+        item: ToDoItem = Depends(get_id_item),
+        session: AsyncSession = Depends(db_helper.session_getter),
+        user: User = Depends(current_user),
+):
+    return await completed_todo_item(
+        item=item,
+        item_update=todo_item_completed,
+        session=session,
+        user=user,
+    )
+
+
 @router.delete("/item/{item_id}/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_item_todo(
     item: ToDoItem = Depends(get_id_item),
@@ -74,7 +91,7 @@ async def delete_item_todo(
     user: User = Depends(current_user),
 ):
     return await del_todo_item(
-        todo_item=item,
+        item=item,
         session=session,
         user=user,
     )
