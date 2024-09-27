@@ -16,7 +16,7 @@ from crud.todo_list import (
 )
 from core.models import db_helper, User
 from core.models.todo_models import ToDoList
-from core.schemas.todo import ToDoListCreate, ToDoListResponse, ToDoListUpdate
+from core.schemas.todo_list import ToDoListCreate, ToDoListResponse, ToDoListUpdate
 
 
 router = APIRouter(tags=["Todo List"], dependencies=[Depends(current_user)])
