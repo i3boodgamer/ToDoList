@@ -64,12 +64,14 @@ async def update_todo_item(
         session: AsyncSession,
         user: User,
 ) -> ToDoItem:
-    await session.get(User, user.id)
-    if result is not None:
+    item_user = (await session.get(ToDoList, item.list_id)).user
+
+    if user.id == item_user:
         item.title = item_update.title
         item.completed = item_update.completed
         await session.commit()
         return item
+
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Item mission at user"
