@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import ToDoList, User
-from core.schemas.todo import (
+from core.schemas.todo_list import (
     ToDoListCreate,
     ToDoListUpdate,
 )
@@ -49,7 +49,7 @@ async def del_todo_list(
     full_item = await get_all_item_list(list_id=todo_list, session=session, user=user)
     if full_item is not None:
         for item in full_item:
-            await del_todo_item(todo_item=item, session=session, user=user)
+            await del_todo_item(item=item, session=session, user=user)
 
     if todo_list.user == user.id:
         await session.delete(todo_list)
@@ -87,7 +87,10 @@ async def full_todo(
         user: User
 ):
     stmt = (
-        Select(ToDoList).options(selectinload(ToDoList.todo_item)).where(ToDoList.user == user.id).order_by(ToDoList.id)
+        Select(ToDoList)
+        .options(selectinload(ToDoList.todo_item))
+        .where(ToDoList.user == user.id)
+        .order_by(ToDoList.id)
     )
     result = await session.scalars(stmt)
     return result.all()

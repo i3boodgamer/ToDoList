@@ -68,7 +68,11 @@ async def update_todo_item(
         session: AsyncSession,
         user: User,
 ) -> ToDoItem:
-    await presence_user(session=session, item=item, user=user)
+    await presence_user(
+        session=session,
+        item=item,
+        user=user,
+    )
 
     item.title = item_update.title
     item.completed = item_update.completed
@@ -82,7 +86,11 @@ async def completed_todo_item(
         session: AsyncSession,
         user: User,
 ) -> ToDoItem:
-    await presence_user(session=session, item=item, user=user)
+    await presence_user(
+        session=session,
+        item=item,
+        user=user,
+    )
 
     item.completed = item_update.completed
     await session.commit()
@@ -95,7 +103,11 @@ async def del_todo_item(
         session: AsyncSession,
         user: User,
 ) -> None:
-    await presence_user(session=session, item=item, user=user)
+    await presence_user(
+        session=session,
+        item=item,
+        user=user,
+    )
 
     await session.delete(item)
     await session.commit()
