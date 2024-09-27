@@ -8,8 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from core.models import ToDoItem, ToDoList, User
-from core.schemas.todo import ToDoItemUpdate
-from core.schemas.todo import ToDoItemCreate
+from core.schemas.todo_item import (
+    ToDoItemUpdate,
+    ToDoItemСompleted,
+    ToDoItemCreate,
+)
+from utils.presence_user import presence_user
 
 
 async def get_all_todo_item(
@@ -64,31 +68,35 @@ async def update_todo_item(
         session: AsyncSession,
         user: User,
 ) -> ToDoItem:
-    item_user = (await session.get(ToDoList, item.list_id)).user
+    await presence_user(session=session, item=item, user=user)
 
-    if user.id == item_user:
-        item.title = item_update.title
-        item.completed = item_update.completed
-        await session.commit()
-        return item
+    item.title = item_update.title
+    item.completed = item_update.completed
+    await session.commit()
+    return item
 
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Item mission at user"
-    )
+
+async def completed_todo_item(
+        item: ToDoItem,
+        item_update: ToDoItemСompleted,
+        session: AsyncSession,
+        user: User,
+) -> ToDoItem:
+    await presence_user(session=session, item=item, user=user)
+
+    item.completed = item_update.completed
+    await session.commit()
+
+    return item
 
 
 async def del_todo_item(
-        todo_item: ToDoItem,
+        item: ToDoItem,
         session: AsyncSession,
         user: User,
 ) -> None:
-    if todo_item.todo_list.user != user.id:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Item missing at user"
-        )
+    await presence_user(session=session, item=item, user=user)
 
-    await session.delete(todo_item)
+    await session.delete(item)
     await session.commit()
 
